@@ -1,0 +1,1120 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Grupo CM Engenharia — Gestão Operacional</title>
+<style>
+/* ═══════════════════════════════════════════
+   RESET & BASE
+═══════════════════════════════════════════ */
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#f8f7f4;--surface:#ffffff;--surface2:#f2f1ee;--surface3:#e8e7e3;
+  --border:#d8d7d3;--border2:#c8c7c3;
+  --text:#1a1917;--text2:#5a5955;--text3:#9a9895;
+  --blue:#1a4fdb;--blue-bg:#eff4ff;--blue-text:#1a4fdb;
+  --red:#c0392b;--red-bg:#fef2f1;--red-text:#c0392b;
+  --amber:#b45309;--amber-bg:#fffbeb;--amber-text:#b45309;
+  --green:#16a34a;--green-bg:#f0fdf4;--green-text:#16a34a;
+  --purple:#6d28d9;--purple-bg:#f5f3ff;--purple-text:#6d28d9;
+  --sidebar-w:220px;
+  --radius:8px;--radius-lg:12px;
+}
+[data-theme="dark"]{
+  --bg:#111110;--surface:#1c1b19;--surface2:#252422;--surface3:#2e2d2a;
+  --border:#3a3936;--border2:#4a4946;
+  --text:#f0efe9;--text2:#a0a09a;--text3:#606060;
+  --blue:#4a7eff;--blue-bg:#1a2a4a;--blue-text:#7aa8ff;
+  --red:#e55;--red-bg:#3a1a1a;--red-text:#ff8888;
+  --amber:#f59e0b;--amber-bg:#3a2a10;--amber-text:#fbbf24;
+  --green:#22c55e;--green-bg:#0f2a1a;--green-text:#4ade80;
+  --purple:#a78bfa;--purple-bg:#2a1a4a;--purple-text:#c4b5fd;
+}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:var(--bg);color:var(--text);font-size:13px;line-height:1.5;min-height:100vh;display:flex;flex-direction:column}
+button,select,input,textarea{font-family:inherit}
+a{color:var(--blue)}
+
+/* ═══════════════════════════════════════════
+   LAYOUT
+═══════════════════════════════════════════ */
+.app-wrap{display:flex;min-height:100vh}
+.sidebar{width:var(--sidebar-w);background:var(--surface);border-right:1px solid var(--border);display:flex;flex-direction:column;flex-shrink:0;position:sticky;top:0;height:100vh;overflow-y:auto}
+.main{flex:1;display:flex;flex-direction:column;min-width:0}
+.topbar{background:var(--surface);border-bottom:1px solid var(--border);padding:.6rem 1.25rem;display:flex;align-items:center;gap:10px;flex-shrink:0}
+.content{padding:1.25rem;flex:1;overflow-y:auto}
+
+/* ═══════════════════════════════════════════
+   SIDEBAR
+═══════════════════════════════════════════ */
+.sidebar-logo{padding:1rem 1rem .75rem;border-bottom:1px solid var(--border)}
+.logo-mark{width:32px;height:32px;background:var(--blue);border-radius:8px;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;font-size:14px;flex-shrink:0}
+.logo-text{font-size:12px;font-weight:600;color:var(--text);line-height:1.2;margin-left:8px}
+.logo-sub{font-size:10px;color:var(--text3);font-weight:400}
+.sidebar-logo-inner{display:flex;align-items:center}
+
+.sidebar-section{padding:.5rem 0}
+.sidebar-label{font-size:10px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;padding:.5rem 1rem .25rem}
+.nav-item{display:flex;align-items:center;gap:8px;padding:.45rem 1rem;cursor:pointer;color:var(--text2);font-size:12.5px;border-right:2px solid transparent;transition:all .12s;user-select:none}
+.nav-item:hover{background:var(--surface2);color:var(--text)}
+.nav-item.active{background:var(--blue-bg);color:var(--blue-text);border-right-color:var(--blue);font-weight:500}
+.nav-item .icon{width:16px;text-align:center;flex-shrink:0;font-size:14px}
+.nav-badge{margin-left:auto;background:var(--red-bg);color:var(--red-text);font-size:10px;padding:1px 6px;border-radius:10px;font-weight:500}
+
+.sidebar-footer{margin-top:auto;padding:.75rem 1rem;border-top:1px solid var(--border)}
+.sidebar-footer-btn{display:flex;align-items:center;gap:6px;font-size:11px;color:var(--text3);cursor:pointer;padding:.3rem 0;background:none;border:none;width:100%;text-align:left}
+.sidebar-footer-btn:hover{color:var(--text)}
+
+/* ═══════════════════════════════════════════
+   TOPBAR
+═══════════════════════════════════════════ */
+.page-title{font-size:15px;font-weight:600;color:var(--text)}
+.page-sub{font-size:11px;color:var(--text3);margin-top:1px}
+.topbar-right{display:flex;align-items:center;gap:8px;margin-left:auto}
+.search-wrap{position:relative}
+.search-wrap input{padding:6px 10px 6px 30px;border:1px solid var(--border);border-radius:var(--radius);background:var(--surface2);color:var(--text);font-size:12px;width:200px;transition:width .2s}
+.search-wrap input:focus{width:260px;outline:none;border-color:var(--blue)}
+.search-icon{position:absolute;left:9px;top:50%;transform:translateY(-50%);color:var(--text3);font-size:13px;pointer-events:none}
+.btn{display:inline-flex;align-items:center;gap:5px;padding:6px 14px;border-radius:var(--radius);border:1px solid var(--border);background:var(--surface);color:var(--text);font-size:12px;cursor:pointer;font-weight:500;transition:all .12s;white-space:nowrap}
+.btn:hover{background:var(--surface2)}
+.btn-primary{background:var(--blue);color:#fff;border-color:var(--blue)}
+.btn-primary:hover{opacity:.9}
+.btn-danger{color:var(--red-text);border-color:var(--red-bg)}
+.btn-danger:hover{background:var(--red-bg)}
+.btn-sm{padding:4px 10px;font-size:11px}
+.btn-icon{padding:6px 8px;border-radius:var(--radius)}
+
+/* ═══════════════════════════════════════════
+   VIEWS
+═══════════════════════════════════════════ */
+.view{display:none}.view.active{display:block}
+
+/* ═══════════════════════════════════════════
+   DASHBOARD
+═══════════════════════════════════════════ */
+.stats-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:10px;margin-bottom:1.25rem}
+.stat-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:1rem 1.1rem}
+.stat-val{font-size:28px;font-weight:700;margin-top:4px;line-height:1}
+.stat-lbl{font-size:11px;color:var(--text2)}
+.stat-sub{font-size:10px;color:var(--text3);margin-top:3px}
+.stat-card.c-red .stat-val{color:var(--red)}
+.stat-card.c-amber .stat-val{color:var(--amber)}
+.stat-card.c-green .stat-val{color:var(--green)}
+.stat-card.c-blue .stat-val{color:var(--blue)}
+.stat-card.c-purple .stat-val{color:var(--purple)}
+
+.dash-grid-2{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:1.25rem}
+.dash-grid-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin-bottom:1.25rem}
+.panel{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:1rem 1.1rem}
+.panel-title{font-size:11px;font-weight:600;color:var(--text2);text-transform:uppercase;letter-spacing:.05em;margin-bottom:.75rem}
+
+.bar-row{display:flex;align-items:center;gap:8px;margin-bottom:7px}
+.bar-label{font-size:11px;color:var(--text2);width:130px;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;flex-shrink:0}
+.bar-track{flex:1;height:6px;background:var(--surface2);border-radius:3px;overflow:hidden}
+.bar-fill{height:100%;border-radius:3px;transition:width .6s}
+.bar-val{font-size:11px;color:var(--text3);width:26px;text-align:right;flex-shrink:0}
+
+.data-table{width:100%;border-collapse:collapse}
+.data-table th{font-size:10px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.05em;padding:6px 10px;border-bottom:1px solid var(--border);text-align:left}
+.data-table td{padding:7px 10px;border-bottom:1px solid var(--border);font-size:12px}
+.data-table tr:last-child td{border-bottom:none}
+.data-table tbody tr{cursor:pointer;transition:background .1s}
+.data-table tbody tr:hover td{background:var(--surface2)}
+
+/* ═══════════════════════════════════════════
+   PILLS / BADGES
+═══════════════════════════════════════════ */
+.pill{display:inline-flex;align-items:center;font-size:10px;padding:2px 8px;border-radius:10px;font-weight:500;white-space:nowrap}
+.pill-sm{font-size:10px;padding:1px 6px}
+/* sector colors */
+.s-comercial{background:#dbeafe;color:#1e40af}
+.s-engenharia{background:#fef3c7;color:#92400e}
+.s-admin{background:#d1fae5;color:#065f46}
+.s-financeiro{background:#ede9fe;color:#4c1d95}
+.s-juridico{background:#fce7f3;color:#831843}
+.s-suprimentos{background:#ffedd5;color:#7c2d12}
+.s-licitacoes{background:#e0f2fe;color:#075985}
+.s-diretoria{background:#f1f5f9;color:#334155}
+.s-posvenda{background:#f0fdf4;color:#166534}
+.s-incorporacao{background:#fdf4ff;color:#701a75}
+/* priority */
+.p-critica{background:#fef2f2;color:#991b1b}
+.p-alta{background:#fff7ed;color:#9a3412}
+.p-media{background:#fefce8;color:#854d0e}
+.p-baixa{background:#f0fdf4;color:#166534}
+/* date status */
+.d-late{background:#fef2f2;color:#dc2626}
+.d-today{background:#fefce8;color:#ca8a04}
+.d-soon{background:#eff6ff;color:#2563eb}
+/* dark mode pill overrides */
+[data-theme="dark"] .s-comercial{background:#1e3a8a;color:#93c5fd}
+[data-theme="dark"] .s-engenharia{background:#78350f;color:#fde68a}
+[data-theme="dark"] .s-admin{background:#064e3b;color:#6ee7b7}
+[data-theme="dark"] .s-financeiro{background:#3b0764;color:#d8b4fe}
+[data-theme="dark"] .s-juridico{background:#500724;color:#fbcfe8}
+[data-theme="dark"] .s-suprimentos{background:#431407;color:#fed7aa}
+[data-theme="dark"] .s-licitacoes{background:#0c4a6e;color:#7dd3fc}
+[data-theme="dark"] .s-diretoria{background:#1e293b;color:#94a3b8}
+[data-theme="dark"] .s-posvenda{background:#052e16;color:#86efac}
+[data-theme="dark"] .s-incorporacao{background:#4a044e;color:#e879f9}
+[data-theme="dark"] .p-critica{background:#450a0a;color:#fca5a5}
+[data-theme="dark"] .p-alta{background:#431407;color:#fdba74}
+[data-theme="dark"] .p-media{background:#422006;color:#fde68a}
+[data-theme="dark"] .p-baixa{background:#052e16;color:#86efac}
+[data-theme="dark"] .d-late{background:#450a0a;color:#f87171}
+[data-theme="dark"] .d-today{background:#422006;color:#fbbf24}
+[data-theme="dark"] .d-soon{background:#1e3a8a;color:#93c5fd}
+
+/* ═══════════════════════════════════════════
+   KANBAN
+═══════════════════════════════════════════ */
+.kanban-outer{overflow-x:auto;padding-bottom:8px}
+.kanban-board{display:flex;gap:10px;min-width:max-content;align-items:flex-start}
+.k-col{background:var(--surface2);border-radius:var(--radius-lg);padding:10px;width:210px;flex-shrink:0}
+.k-col-hdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px}
+.k-col-name{font-size:11px;font-weight:600;color:var(--text2)}
+.k-col-cnt{background:var(--surface);border:1px solid var(--border);border-radius:10px;font-size:10px;padding:1px 7px;color:var(--text2)}
+.k-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:10px;margin-bottom:8px;cursor:pointer;transition:box-shadow .12s,border-color .12s;position:relative;overflow:hidden}
+.k-card:hover{border-color:var(--blue);box-shadow:0 2px 8px rgba(0,0,0,.08)}
+.k-card::before{content:'';position:absolute;left:0;top:0;bottom:0;width:3px}
+.k-card.pri-critica::before{background:#ef4444}
+.k-card.pri-alta::before{background:#f97316}
+.k-card.pri-media::before{background:#eab308}
+.k-card.pri-baixa::before{background:#22c55e}
+.k-card-title{font-size:12px;font-weight:500;padding-left:7px;margin-bottom:5px;line-height:1.35;color:var(--text)}
+.k-card-pills{display:flex;flex-wrap:wrap;gap:3px;padding-left:7px;margin-bottom:5px}
+.k-card-foot{display:flex;justify-content:space-between;align-items:center;padding-left:7px;margin-top:4px}
+.k-card-owner{font-size:10px;color:var(--text3)}
+.k-card-date{font-size:10px;color:var(--text3)}
+.k-progress{height:3px;background:var(--surface2);border-radius:2px;margin:5px 7px 0;overflow:hidden}
+.k-progress-fill{height:100%;border-radius:2px;background:var(--green);transition:width .3s}
+.k-col-add{width:100%;padding:7px;border:1px dashed var(--border2);border-radius:var(--radius);background:transparent;color:var(--text3);font-size:11px;cursor:pointer;margin-top:2px}
+.k-col-add:hover{background:var(--surface);color:var(--text)}
+
+/* ═══════════════════════════════════════════
+   FILTERS
+═══════════════════════════════════════════ */
+.filters-bar{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:.9rem;align-items:center;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:.6rem .9rem}
+.filter-group{display:flex;align-items:center;gap:5px}
+.filter-group label{font-size:11px;color:var(--text3);white-space:nowrap}
+.filter-group select{padding:4px 8px;border:1px solid var(--border);border-radius:var(--radius);background:var(--surface2);color:var(--text);font-size:11px}
+.filters-bar .divider{width:1px;height:20px;background:var(--border);margin:0 2px}
+
+/* ═══════════════════════════════════════════
+   MODAL OVERLAY
+═══════════════════════════════════════════ */
+.overlay{position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:500;display:flex;align-items:flex-start;justify-content:center;padding:20px 12px;overflow-y:auto}
+.overlay.hidden{display:none}
+.modal{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);width:min(700px,100%);max-width:100%;box-shadow:0 20px 60px rgba(0,0,0,.2)}
+.modal-hdr{padding:1.1rem 1.25rem .85rem;border-bottom:1px solid var(--border);display:flex;align-items:flex-start;gap:10px}
+.modal-hdr-text{flex:1;min-width:0}
+.modal-title-input{font-size:16px;font-weight:600;color:var(--text);border:none;background:transparent;width:100%;outline:none;line-height:1.3}
+.modal-title-input:focus{border-bottom:1px solid var(--blue)}
+.modal-pills{display:flex;gap:5px;flex-wrap:wrap;margin-top:5px}
+.modal-close{background:none;border:none;font-size:22px;color:var(--text3);cursor:pointer;padding:0 4px;line-height:1;flex-shrink:0}
+.modal-close:hover{color:var(--text)}
+
+.modal-tabs{display:flex;border-bottom:1px solid var(--border);padding:0 1.25rem}
+.m-tab{padding:.5rem .85rem;font-size:12px;border:none;background:none;cursor:pointer;color:var(--text2);border-bottom:2px solid transparent;margin-bottom:-1px;font-weight:500;transition:all .12s}
+.m-tab.active{color:var(--blue);border-bottom-color:var(--blue)}
+.m-tab:hover:not(.active){color:var(--text)}
+
+.modal-body{padding:1.1rem 1.25rem}
+.m-panel{display:none}.m-panel.active{display:block}
+
+/* ═══════════════════════════════════════════
+   DETAIL FIELDS
+═══════════════════════════════════════════ */
+.field-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px 20px;margin-bottom:.9rem}
+.field-grid.three{grid-template-columns:1fr 1fr 1fr}
+.field-item{}
+.field-label{font-size:10px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.05em;margin-bottom:4px}
+.field-val{font-size:13px;color:var(--text)}
+.field-input{width:100%;padding:6px 9px;border:1px solid var(--border);border-radius:var(--radius);background:var(--surface2);color:var(--text);font-size:12px;transition:border-color .12s}
+.field-input:focus{outline:none;border-color:var(--blue)}
+.field-textarea{width:100%;padding:6px 9px;border:1px solid var(--border);border-radius:var(--radius);background:var(--surface2);color:var(--text);font-size:12px;resize:vertical;min-height:72px;transition:border-color .12s}
+.field-textarea:focus{outline:none;border-color:var(--blue)}
+.field-select{width:100%;padding:6px 9px;border:1px solid var(--border);border-radius:var(--radius);background:var(--surface2);color:var(--text);font-size:12px}
+.field-select:focus{outline:none;border-color:var(--blue)}
+.section-divider{height:1px;background:var(--border);margin:.9rem 0}
+.form-actions-modal{display:flex;gap:6px;justify-content:flex-end;padding-top:.75rem;border-top:1px solid var(--border);margin-top:.75rem}
+
+/* ═══════════════════════════════════════════
+   CHECKLIST
+═══════════════════════════════════════════ */
+.cl-progress-row{display:flex;align-items:center;gap:8px;margin-bottom:.6rem}
+.cl-progress-track{flex:1;height:6px;background:var(--surface2);border-radius:3px;overflow:hidden}
+.cl-progress-fill{height:100%;background:var(--green);border-radius:3px;transition:width .3s}
+.cl-pct{font-size:11px;color:var(--text2);width:30px;text-align:right}
+.cl-item{display:flex;align-items:center;gap:9px;padding:7px 0;border-bottom:1px solid var(--border)}
+.cl-item:last-child{border-bottom:none}
+.cl-check{width:18px;height:18px;border:1.5px solid var(--border2);border-radius:50%;cursor:pointer;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:11px;transition:all .15s;color:#fff}
+.cl-check.done{background:var(--green);border-color:var(--green)}
+.cl-check-text{flex:1;font-size:12px;color:var(--text)}
+.cl-check-text.done{text-decoration:line-through;color:var(--text3)}
+.cl-del{background:none;border:none;color:var(--text3);cursor:pointer;font-size:15px;opacity:.5;padding:0 4px}
+.cl-del:hover{opacity:1;color:var(--red)}
+.cl-add-row{display:flex;gap:6px;margin-top:8px}
+.cl-add-inp{flex:1;padding:6px 9px;border:1px solid var(--border);border-radius:var(--radius);background:var(--surface2);color:var(--text);font-size:12px}
+.cl-add-inp:focus{outline:none;border-color:var(--blue)}
+
+/* ═══════════════════════════════════════════
+   COMMENTS
+═══════════════════════════════════════════ */
+.comment-item{padding:.7rem 0;border-bottom:1px solid var(--border)}
+.comment-item:last-child{border-bottom:none}
+.comment-meta{font-size:11px;color:var(--text3);margin-bottom:3px;display:flex;align-items:center;gap:6px}
+.comment-autor{font-weight:600;color:var(--text2)}
+.comment-txt{font-size:12px;color:var(--text)}
+.comment-form{margin-top:.75rem;display:flex;flex-direction:column;gap:7px}
+.comment-row{display:flex;gap:6px}
+
+/* ═══════════════════════════════════════════
+   FILES
+═══════════════════════════════════════════ */
+.file-drop{border:1.5px dashed var(--border2);border-radius:var(--radius-lg);padding:1.5rem;text-align:center;cursor:pointer;color:var(--text3);transition:all .15s}
+.file-drop:hover{border-color:var(--blue);background:var(--blue-bg);color:var(--blue)}
+.file-chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:.6rem}
+.file-chip{background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius);padding:4px 10px;font-size:11px;display:flex;align-items:center;gap:5px;color:var(--text2)}
+
+/* ═══════════════════════════════════════════
+   HISTORY
+═══════════════════════════════════════════ */
+.hist-item{padding:6px 0;border-bottom:1px solid var(--border);display:flex;align-items:flex-start;gap:8px}
+.hist-item:last-child{border-bottom:none}
+.hist-dot{width:8px;height:8px;border-radius:50%;background:var(--border2);flex-shrink:0;margin-top:4px}
+.hist-txt{font-size:11px;color:var(--text2);flex:1}
+.hist-date{font-size:10px;color:var(--text3);flex-shrink:0}
+
+/* ═══════════════════════════════════════════
+   NEW DEMAND FORM
+═══════════════════════════════════════════ */
+.new-form-wrap{max-width:720px}
+.new-section{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:1.1rem;margin-bottom:.9rem}
+.new-section-title{font-size:11px;font-weight:600;color:var(--text2);text-transform:uppercase;letter-spacing:.05em;margin-bottom:.8rem;display:flex;align-items:center;gap:6px}
+.new-section-title::after{content:'';flex:1;height:1px;background:var(--border)}
+
+/* ═══════════════════════════════════════════
+   TOAST
+═══════════════════════════════════════════ */
+.toast{position:fixed;bottom:20px;right:20px;background:var(--text);color:var(--bg);padding:.6rem 1rem;border-radius:var(--radius);font-size:12px;z-index:1000;opacity:0;transform:translateY(10px);transition:all .2s;pointer-events:none}
+.toast.show{opacity:1;transform:translateY(0)}
+
+/* ═══════════════════════════════════════════
+   EMPTY STATE
+═══════════════════════════════════════════ */
+.empty-state{text-align:center;padding:3rem 1rem;color:var(--text3)}
+.empty-state .empty-icon{font-size:2.5rem;margin-bottom:.75rem}
+.empty-state p{font-size:13px}
+
+/* ═══════════════════════════════════════════
+   SCROLLBAR
+═══════════════════════════════════════════ */
+::-webkit-scrollbar{width:5px;height:5px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:var(--border2);border-radius:3px}
+</style>
+</head>
+<body>
+
+<div class="app-wrap">
+<!-- ════════════════ SIDEBAR ════════════════ -->
+<aside class="sidebar">
+  <div class="sidebar-logo">
+    <div class="sidebar-logo-inner">
+      <div class="logo-mark">CM</div>
+      <div class="logo-text">Grupo CM Engenharia<div class="logo-sub">Gestão Operacional</div></div>
+    </div>
+  </div>
+
+  <div class="sidebar-section">
+    <div class="sidebar-label">Visão Geral</div>
+    <div class="nav-item active" onclick="nav('dashboard',this)"><span class="icon">📊</span>Dashboard</div>
+    <div class="nav-item" onclick="nav('kanban',this)"><span class="icon">📋</span>Kanban Geral<span class="nav-badge" id="badge-late">0</span></div>
+  </div>
+
+  <div class="sidebar-section">
+    <div class="sidebar-label">Pipelines</div>
+    <div class="nav-item" onclick="nav('negocios',this)"><span class="icon">🤝</span>Novos Negócios</div>
+    <div class="nav-item" onclick="nav('obras',this)"><span class="icon">🏗️</span>Obras</div>
+    <div class="nav-item" onclick="nav('admin',this)"><span class="icon">📁</span>Administrativo</div>
+  </div>
+
+  <div class="sidebar-section">
+    <div class="sidebar-label">Setores</div>
+    <div class="nav-item" onclick="nav('financeiro',this)"><span class="icon">💰</span>Financeiro</div>
+    <div class="nav-item" onclick="nav('juridico',this)"><span class="icon">⚖️</span>Jurídico</div>
+    <div class="nav-item" onclick="nav('suprimentos',this)"><span class="icon">📦</span>Suprimentos</div>
+    <div class="nav-item" onclick="nav('licitacoes',this)"><span class="icon">📜</span>Licitações</div>
+    <div class="nav-item" onclick="nav('diretoria',this)"><span class="icon">🏢</span>Diretoria</div>
+  </div>
+
+  <div class="sidebar-footer">
+    <button class="sidebar-footer-btn" onclick="openNew()">➕ Nova demanda</button>
+    <button class="sidebar-footer-btn" onclick="exportData()">⬇️ Exportar dados</button>
+    <button class="sidebar-footer-btn" onclick="document.getElementById('import-file').click()">⬆️ Importar dados</button>
+    <input type="file" id="import-file" accept=".json" style="display:none" onchange="importData(this)">
+    <button class="sidebar-footer-btn" onclick="toggleTheme()">🌓 Alternar tema</button>
+  </div>
+</aside>
+
+<!-- ════════════════ MAIN ════════════════ -->
+<div class="main">
+  <!-- TOPBAR -->
+  <div class="topbar">
+    <div>
+      <div class="page-title" id="page-title">Dashboard</div>
+      <div class="page-sub" id="page-sub">Visão geral do Grupo CM Engenharia</div>
+    </div>
+    <div class="topbar-right">
+      <div class="search-wrap">
+        <span class="search-icon">🔍</span>
+        <input type="text" placeholder="Buscar demandas..." oninput="globalSearch(this.value)" id="search-input">
+      </div>
+      <button class="btn btn-primary" onclick="openNew()">+ Nova demanda</button>
+    </div>
+  </div>
+
+  <div class="content">
+
+    <!-- ════ DASHBOARD ════ -->
+    <div class="view active" id="view-dashboard">
+      <div class="stats-grid" id="dash-stats"></div>
+      <div class="dash-grid-2">
+        <div class="panel">
+          <div class="panel-title">Progresso por setor</div>
+          <div id="dash-setores"></div>
+        </div>
+        <div class="panel">
+          <div class="panel-title">Distribuição por prioridade</div>
+          <div id="dash-prioridades"></div>
+        </div>
+      </div>
+      <div class="panel">
+        <div class="panel-title">Demandas recentes</div>
+        <table class="data-table">
+          <thead><tr><th>Título</th><th>Setor</th><th>Responsável</th><th>Prioridade</th><th>Prazo</th><th>Status</th></tr></thead>
+          <tbody id="dash-recent"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- ════ KANBAN GERAL ════ -->
+    <div class="view" id="view-kanban">
+      <div class="filters-bar">
+        <div class="filter-group"><label>Setor</label>
+          <select id="f-setor" onchange="applyFilters()"><option value="">Todos</option></select></div>
+        <div class="divider"></div>
+        <div class="filter-group"><label>Prioridade</label>
+          <select id="f-pri" onchange="applyFilters()">
+            <option value="">Todas</option><option>Crítica</option><option>Alta</option><option>Média</option><option>Baixa</option>
+          </select></div>
+        <div class="divider"></div>
+        <div class="filter-group"><label>Responsável</label>
+          <select id="f-resp" onchange="applyFilters()"><option value="">Todos</option></select></div>
+        <div class="divider"></div>
+        <div class="filter-group"><label>Prazo</label>
+          <select id="f-prazo" onchange="applyFilters()">
+            <option value="">Todos</option><option value="late">Atrasados</option>
+            <option value="today">Vence hoje</option><option value="week">Esta semana</option>
+          </select></div>
+        <div class="divider"></div>
+        <div class="filter-group"><label>Tipo</label>
+          <select id="f-tipo" onchange="applyFilters()"><option value="">Todos</option></select></div>
+        <button class="btn btn-sm" onclick="clearFilters()" style="margin-left:auto">Limpar</button>
+      </div>
+      <div class="kanban-outer"><div class="kanban-board" id="kb-geral"></div></div>
+    </div>
+
+    <!-- ════ NEGÓCIOS ════ -->
+    <div class="view" id="view-negocios">
+      <div class="kanban-outer"><div class="kanban-board" id="kb-negocios"></div></div>
+    </div>
+
+    <!-- ════ OBRAS ════ -->
+    <div class="view" id="view-obras">
+      <div class="kanban-outer"><div class="kanban-board" id="kb-obras"></div></div>
+    </div>
+
+    <!-- ════ ADMIN ════ -->
+    <div class="view" id="view-admin">
+      <div class="kanban-outer"><div class="kanban-board" id="kb-admin"></div></div>
+    </div>
+
+    <!-- ════ FINANCEIRO ════ -->
+    <div class="view" id="view-financeiro">
+      <div class="kanban-outer"><div class="kanban-board" id="kb-financeiro"></div></div>
+    </div>
+
+    <!-- ════ JURIDICO ════ -->
+    <div class="view" id="view-juridico">
+      <div class="kanban-outer"><div class="kanban-board" id="kb-juridico"></div></div>
+    </div>
+
+    <!-- ════ SUPRIMENTOS ════ -->
+    <div class="view" id="view-suprimentos">
+      <div class="kanban-outer"><div class="kanban-board" id="kb-suprimentos"></div></div>
+    </div>
+
+    <!-- ════ LICITACOES ════ -->
+    <div class="view" id="view-licitacoes">
+      <div class="kanban-outer"><div class="kanban-board" id="kb-licitacoes"></div></div>
+    </div>
+
+    <!-- ════ DIRETORIA ════ -->
+    <div class="view" id="view-diretoria">
+      <div class="kanban-outer"><div class="kanban-board" id="kb-diretoria"></div></div>
+    </div>
+
+  </div><!-- .content -->
+</div><!-- .main -->
+</div><!-- .app-wrap -->
+
+<!-- ════════════════ MODAL DETALHES ════════════════ -->
+<div class="overlay hidden" id="ov-detail" onclick="if(event.target===this)closeDetail()">
+  <div class="modal">
+    <div class="modal-hdr">
+      <div class="modal-hdr-text">
+        <input class="modal-title-input" id="d-title" onblur="saveField('title',this.value)">
+        <div class="modal-pills" id="d-pills"></div>
+      </div>
+      <button class="modal-close" onclick="closeDetail()">×</button>
+    </div>
+    <div class="modal-tabs">
+      <button class="m-tab active" onclick="mTab('det')">Detalhes</button>
+      <button class="m-tab" onclick="mTab('cl')">Checklist</button>
+      <button class="m-tab" onclick="mTab('com')">Comentários</button>
+      <button class="m-tab" onclick="mTab('arq')">Arquivos</button>
+      <button class="m-tab" onclick="mTab('hist')">Histórico</button>
+    </div>
+    <div class="modal-body">
+      <div class="m-panel active" id="mp-det"></div>
+      <div class="m-panel" id="mp-cl"></div>
+      <div class="m-panel" id="mp-com"></div>
+      <div class="m-panel" id="mp-arq"></div>
+      <div class="m-panel" id="mp-hist"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════ MODAL NOVA DEMANDA ════════════════ -->
+<div class="overlay hidden" id="ov-new" onclick="if(event.target===this)closeNew()">
+  <div class="modal new-form-wrap">
+    <div class="modal-hdr">
+      <div class="modal-hdr-text"><div class="modal-title-input" style="font-size:15px">Nova demanda</div></div>
+      <button class="modal-close" onclick="closeNew()">×</button>
+    </div>
+    <div class="modal-body">
+      <div class="new-section">
+        <div class="new-section-title">Identificação</div>
+        <div class="field-grid" style="grid-template-columns:1fr">
+          <div class="field-item"><div class="field-label">Título *</div>
+            <input class="field-input" id="n-title" placeholder="Título claro e objetivo da demanda"></div>
+        </div>
+        <div class="field-grid">
+          <div class="field-item"><div class="field-label">Tipo de demanda *</div>
+            <select class="field-select" id="n-tipo" onchange="onTipoChange()">
+              <option>Novo negócio</option><option>Assunto de obra</option><option>Diligência administrativa</option>
+              <option>Financeiro</option><option>Jurídico</option><option>Suprimentos</option>
+              <option>Licitação</option><option>Incorporação</option><option>Reunião</option><option>Pendência externa</option>
+            </select></div>
+          <div class="field-item"><div class="field-label">Setor responsável *</div>
+            <select class="field-select" id="n-setor">
+              <option>Comercial / Novos Negócios</option><option>Engenharia / Obras</option>
+              <option>Administrativo</option><option>Financeiro</option><option>Jurídico</option>
+              <option>Suprimentos</option><option>Licitações</option><option>Diretoria</option>
+              <option>Pós-venda</option><option>Incorporação</option>
+            </select></div>
+        </div>
+        <div class="field-grid three">
+          <div class="field-item"><div class="field-label">Prioridade</div>
+            <select class="field-select" id="n-pri">
+              <option>Baixa</option><option selected>Média</option><option>Alta</option><option>Crítica</option>
+            </select></div>
+          <div class="field-item"><div class="field-label">Status inicial</div>
+            <select class="field-select" id="n-status" style="font-size:11px">
+              <option>Entrada / Nova demanda</option><option>Em análise</option>
+            </select></div>
+          <div class="field-item"><div class="field-label">Data limite</div>
+            <input type="date" class="field-input" id="n-date"></div>
+        </div>
+      </div>
+
+      <div class="new-section">
+        <div class="new-section-title">Responsabilidades</div>
+        <div class="field-grid">
+          <div class="field-item"><div class="field-label">Responsável principal</div>
+            <input class="field-input" id="n-resp" placeholder="Nome do responsável"></div>
+          <div class="field-item"><div class="field-label">Participantes</div>
+            <input class="field-input" id="n-partic" placeholder="Nomes separados por vírgula"></div>
+        </div>
+      </div>
+
+      <div class="new-section">
+        <div class="new-section-title">Contexto</div>
+        <div class="field-grid">
+          <div class="field-item"><div class="field-label">Vinculado a (cliente / obra / contrato)</div>
+            <input class="field-input" id="n-vinc" placeholder="Ex: Obra Edifício Solaris / Cliente Moreira"></div>
+          <div class="field-item"><div class="field-label">Tags</div>
+            <input class="field-input" id="n-tags" placeholder="proposta, urgente, prefeitura..."></div>
+        </div>
+        <div class="field-item"><div class="field-label">Descrição detalhada</div>
+          <textarea class="field-textarea" id="n-desc" style="margin-top:4px" placeholder="Descreva o contexto, objetivo e informações relevantes da demanda..."></textarea></div>
+      </div>
+
+      <div class="new-section">
+        <div class="new-section-title">Checklist inicial</div>
+        <div id="n-cl-list"></div>
+        <div class="cl-add-row" style="margin-top:8px">
+          <input class="cl-add-inp" id="n-cl-inp" placeholder="Adicionar item ao checklist..." onkeydown="if(event.key==='Enter')addNewCLItem()">
+          <button class="btn btn-sm" onclick="addNewCLItem()">+ Adicionar</button>
+        </div>
+      </div>
+
+      <div class="form-actions-modal">
+        <button class="btn" onclick="closeNew()">Cancelar</button>
+        <button class="btn btn-primary" onclick="saveNewDemand()">✓ Criar demanda</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ══════════════════════════════════════════════
+//  CONSTANTS
+// ══════════════════════════════════════════════
+const COLS_GERAL = ['Entrada / Nova demanda','Em análise','Aguardando documentos','Aguardando terceiro','Em execução','Em validação','Concluído','Arquivado'];
+const COLS_NEG   = ['Lead identificado','Contato inicial','Reunião agendada','Estudo preliminar','Orçamento / proposta','Negociação','Contrato','Ganho','Perdido','Stand-by'];
+const COLS_OBR   = ['Pendência identificada','Triagem técnica','Responsável definido','Documentação/anexo','Execução em andamento','Validação da engenharia','Resolvido','Reaberto'];
+const COLS_ADM   = ['Solicitação recebida','Conferência de documentos','Pendência interna','Pendência externa','Em protocolo','Aguardando retorno','Finalizado'];
+
+const SETOR_MAP = {
+  'Comercial / Novos Negócios': {pill:'s-comercial', color:'#2563eb', view:'negocios', cols:COLS_NEG},
+  'Engenharia / Obras':         {pill:'s-engenharia',color:'#d97706', view:'obras',    cols:COLS_OBR},
+  'Administrativo':             {pill:'s-admin',     color:'#16a34a', view:'admin',    cols:COLS_ADM},
+  'Financeiro':                 {pill:'s-financeiro',color:'#7c3aed', view:'financeiro',cols:COLS_GERAL},
+  'Jurídico':                   {pill:'s-juridico',  color:'#db2777', view:'juridico', cols:COLS_GERAL},
+  'Suprimentos':                {pill:'s-suprimentos',color:'#ea580c',view:'suprimentos',cols:COLS_GERAL},
+  'Licitações':                 {pill:'s-licitacoes',color:'#0284c7', view:'licitacoes',cols:COLS_GERAL},
+  'Diretoria':                  {pill:'s-diretoria', color:'#475569', view:'diretoria',cols:COLS_GERAL},
+  'Pós-venda':                  {pill:'s-posvenda',  color:'#15803d', view:'negocios', cols:COLS_GERAL},
+  'Incorporação':               {pill:'s-incorporacao',color:'#a21caf',view:'negocios',cols:COLS_GERAL},
+};
+
+const PRI_PILL = {Crítica:'p-critica',Alta:'p-alta',Média:'p-media',Baixa:'p-baixa'};
+const PRI_BAR  = {Crítica:'pri-critica',Alta:'pri-alta',Média:'pri-media',Baixa:'pri-baixa'};
+
+const CL_TPL = {
+  'Novo negócio':['Identificar e registrar cliente','Fazer contato inicial','Agendar reunião','Levantar escopo da demanda','Solicitar documentos necessários','Realizar visita técnica','Elaborar orçamento','Validar margem','Enviar proposta formal','Registrar follow-up','Atualizar status no pipeline'],
+  'Assunto de obra':['Descrever o problema detalhadamente','Anexar fotos e documentos','Definir responsável técnico','Avaliar impacto em prazo e custo','Criar plano de ação','Executar a correção','Registrar evidências da solução','Validar conclusão com engenharia'],
+  'Diligência administrativa':['Identificar órgão ou empresa envolvida','Separar toda a documentação','Conferir exigências do órgão','Protocolar requerimento','Acompanhar prazo de retorno','Registrar retorno/resultado','Finalizar e arquivar'],
+  'Financeiro':['Receber e registrar solicitação','Verificar disponibilidade orçamentária','Aprovar pagamento','Emitir NF / boleto','Registrar baixa no sistema'],
+  'Jurídico':['Receber e analisar demanda','Realizar análise jurídica','Minutar documento/contrato','Revisar com equipe','Assinar / protocolar','Arquivar documentação'],
+  'Suprimentos':['Receber solicitação de compra','Obter cotação de mínimo 3 fornecedores','Encaminhar para aprovação','Emitir pedido de compra','Receber e conferir mercadoria','Dar entrada no estoque'],
+  'Licitação':['Identificar e analisar edital','Verificar requisitos de habilitação','Separar documentação técnica e jurídica','Elaborar proposta técnica e comercial','Protocolar proposta','Acompanhar julgamento','Registrar resultado'],
+};
+
+const PAGE_META = {
+  dashboard: {title:'Dashboard',sub:'Visão geral do Grupo CM Engenharia'},
+  kanban:    {title:'Kanban Geral',sub:'Todas as demandas unificadas'},
+  negocios:  {title:'Novos Negócios',sub:'Pipeline comercial'},
+  obras:     {title:'Obras',sub:'Assuntos técnicos e pendências de obra'},
+  admin:     {title:'Administrativo',sub:'Diligências e processos administrativos'},
+  financeiro:{title:'Financeiro',sub:'Demandas financeiras'},
+  juridico:  {title:'Jurídico',sub:'Demandas jurídicas'},
+  suprimentos:{title:'Suprimentos',sub:'Compras e estoque'},
+  licitacoes:{title:'Licitações',sub:'Processos licitatórios'},
+  diretoria: {title:'Diretoria',sub:'Demandas da diretoria'},
+};
+
+// ══════════════════════════════════════════════
+//  STATE
+// ══════════════════════════════════════════════
+const today = new Date(); today.setHours(0,0,0,0);
+function dayDiff(d){if(!d)return null;const t=new Date(d+'T00:00:00');t.setHours(0,0,0,0);return Math.round((t-today)/86400000)}
+function fmtDate(d){if(!d)return '—';const[y,m,dd]=d.split('-');return`${dd}/${m}/${y}`}
+function nowStr(){return new Date().toLocaleDateString('pt-BR')+' '+new Date().toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'})}
+function ds(d){if(!d)return null;const df=dayDiff(d);if(df<0)return'late';if(df===0)return'today';if(df<=5)return'soon';return'ok'}
+function dsPill(d){const s=ds(d);if(!s||s==='ok')return'';
+  if(s==='late')return`<span class="pill d-late">⚠ Atrasado</span>`;
+  if(s==='today')return`<span class="pill d-today">⏰ Hoje</span>`;
+  return`<span class="pill d-soon">📅 Em breve</span>`}
+function pctCL(item){if(!item.checklist||!item.checklist.length)return 0;return Math.round(item.checklist.filter(c=>c.done).length/item.checklist.length*100)}
+function sectorPill(s){const m=SETOR_MAP[s];return m?`<span class="pill ${m.pill}">${s.split('/')[0].trim()}</span>`:''}
+
+let DATA = [];
+let nxtId = 1;
+let activeId = null;
+let newCLItems = [];
+let kFilters = {setor:'',pri:'',resp:'',prazo:'',tipo:''};
+
+const SEED = [
+  {id:1,title:'Residencial Parque Norte — Proposta Comercial',tipo:'Novo negócio',setor:'Comercial / Novos Negócios',status:'Orçamento / proposta',pri:'Alta',resp:'Carlos Lima',partic:'Ana Costa',date:'2025-06-22',vinc:'Cliente: Família Moreira',tags:'residencial, proposta',desc:'Elaborar proposta técnica e comercial para residência de alto padrão no Parque Norte. Cliente solicitou orçamento para 420m² com acabamento premium.',checklist:[{t:'Identificar e registrar cliente',done:true},{t:'Fazer contato inicial',done:true},{t:'Agendar reunião',done:true},{t:'Levantar escopo da demanda',done:true},{t:'Realizar visita técnica',done:false},{t:'Elaborar orçamento',done:false},{t:'Validar margem',done:false},{t:'Enviar proposta formal',done:false}],files:['planta_terreno.pdf','briefing_cliente.docx'],comments:[{autor:'Carlos Lima',data:'10/06/2025 09:15',txt:'Reunião inicial realizada. Cliente tem urgência e preferência por início em agosto.'}],hist:[{txt:'Demanda criada',data:'05/06/2025 08:00'},{txt:'Status alterado: Contato inicial → Orçamento / proposta',data:'10/06/2025 09:20'}]},
+  {id:2,title:'Alvará de Construção — Bloco B Edifício Solaris',tipo:'Diligência administrativa',setor:'Administrativo',status:'Em protocolo',pri:'Crítica',resp:'Ana Costa',partic:'',date:'2025-06-13',vinc:'Obra: Edifício Solaris',tags:'alvará, prefeitura, urgente',desc:'Protocolo do alvará de construção do Bloco B junto à prefeitura municipal. Prazo legal improrrogável.',checklist:[{t:'Identificar órgão ou empresa envolvida',done:true},{t:'Separar toda a documentação',done:true},{t:'Conferir exigências do órgão',done:true},{t:'Protocolar requerimento',done:true},{t:'Acompanhar prazo de retorno',done:false},{t:'Registrar retorno/resultado',done:false},{t:'Finalizar e arquivar',done:false}],files:['docs_alvara.zip','projeto_aprovado.pdf'],comments:[{autor:'Ana Costa',data:'08/06/2025 14:30',txt:'Protocolo realizado. Aguardando análise da prefeitura. Prazo é 30 dias.'}],hist:[{txt:'Demanda criada',data:'01/06/2025 08:00'},{txt:'Status alterado: Solicitação recebida → Em protocolo',data:'08/06/2025 14:32'}]},
+  {id:3,title:'Trinca na Fundação — Bloco A Edifício Solaris',tipo:'Assunto de obra',setor:'Engenharia / Obras',status:'Execução em andamento',pri:'Crítica',resp:'Rodrigo Melo',partic:'Eng. Marcos, Equipe Fundação',date:'2025-06-15',vinc:'Obra: Edifício Solaris',tags:'fundação, estrutura, crítico',desc:'Trinca detectada na fundação do Bloco A durante inspeção rotineira. Requer ação imediata para evitar comprometimento estrutural.',checklist:[{t:'Descrever o problema detalhadamente',done:true},{t:'Anexar fotos e documentos',done:true},{t:'Definir responsável técnico',done:true},{t:'Avaliar impacto em prazo e custo',done:true},{t:'Criar plano de ação',done:true},{t:'Executar a correção',done:false},{t:'Registrar evidências da solução',done:false},{t:'Validar conclusão com engenharia',done:false}],files:['foto_trinca_01.jpg','foto_trinca_02.jpg','laudo_estrutural.pdf'],comments:[{autor:'Rodrigo Melo',data:'07/06/2025 16:00',txt:'Plano de ação aprovado pela diretoria. Equipe mobilizada.'},{autor:'Eng. Marcos',data:'09/06/2025 08:30',txt:'Início da injeção de resina programado para segunda-feira.'}],hist:[{txt:'Demanda criada',data:'06/06/2025 10:00'},{txt:'Prioridade alterada: Alta → Crítica',data:'06/06/2025 11:00'},{txt:'Status alterado: Triagem técnica → Execução em andamento',data:'07/06/2025 16:05'}]},
+  {id:4,title:'Renovação Contrato Fornecedor Aço Estrutural',tipo:'Suprimentos',setor:'Suprimentos',status:'Em análise',pri:'Média',resp:'Pedro Alves',partic:'',date:'2025-07-01',vinc:'Fornecedor: Aço Sul Ltda',tags:'contrato, suprimentos, aço',desc:'Renovar contrato anual de fornecimento de aço estrutural. Verificar reajuste de preços e condições de entrega.',checklist:[{t:'Receber e registrar solicitação',done:true},{t:'Obter cotação de mínimo 3 fornecedores',done:false},{t:'Encaminhar para aprovação',done:false},{t:'Emitir pedido de compra',done:false},{t:'Receber e conferir mercadoria',done:false},{t:'Dar entrada no estoque',done:false}],files:[],comments:[],hist:[{txt:'Demanda criada',data:'10/06/2025 09:00'}]},
+  {id:5,title:'Licitação Escola Municipal São Bento',tipo:'Licitação',setor:'Licitações',status:'Estudo preliminar',pri:'Alta',resp:'Maria Souza',partic:'Carlos Lima, Juridico',date:'2025-07-15',vinc:'Licitação: Pregão 042/2025 — Prefeitura de São Bento',tags:'licitação, escola, municipal',desc:'Participação em pregão eletrônico para construção de escola municipal com capacidade para 600 alunos. Valor estimado R$ 4.2M.',checklist:[{t:'Identificar e analisar edital',done:true},{t:'Verificar requisitos de habilitação',done:true},{t:'Separar documentação técnica e jurídica',done:false},{t:'Elaborar proposta técnica e comercial',done:false},{t:'Protocolar proposta',done:false},{t:'Acompanhar julgamento',done:false},{t:'Registrar resultado',done:false}],files:['edital_042_2025.pdf'],comments:[{autor:'Maria Souza',data:'11/06/2025 10:00',txt:'Edital analisado. Empresa habilitada a participar. Prazo de entrega: 15/07.'}],hist:[{txt:'Demanda criada',data:'09/06/2025 08:00'},{txt:'Status alterado: Lead identificado → Estudo preliminar',data:'11/06/2025 10:05'}]},
+  {id:6,title:'Abertura Filial Centro — Registro Junta Comercial',tipo:'Diligência administrativa',setor:'Administrativo',status:'Finalizado',pri:'Média',resp:'Juliana Reis',partic:'',date:'2025-06-05',vinc:'Junta Comercial — Filial Centro',tags:'abertura, filial, junta comercial',desc:'Processo de abertura de filial no centro da cidade. Todos os documentos registrados.',checklist:[{t:'Identificar órgão ou empresa envolvida',done:true},{t:'Separar toda a documentação',done:true},{t:'Conferir exigências do órgão',done:true},{t:'Protocolar requerimento',done:true},{t:'Acompanhar prazo de retorno',done:true},{t:'Registrar retorno/resultado',done:true},{t:'Finalizar e arquivar',done:true}],files:['contrato_social_alterado.pdf','cnpj_filial.pdf'],comments:[{autor:'Juliana Reis',data:'05/06/2025 15:00',txt:'Processo concluído com sucesso. CNPJ da filial ativo.'}],hist:[{txt:'Demanda criada',data:'20/05/2025 08:00'},{txt:'Finalizado',data:'05/06/2025 15:02'}]},
+  {id:7,title:'Galpão Industrial — Lead Indústrias Beta',tipo:'Novo negócio',setor:'Comercial / Novos Negócios',status:'Lead identificado',pri:'Média',resp:'Maria Souza',partic:'',date:'2025-07-20',vinc:'Cliente: Indústrias Beta S.A.',tags:'galpão, industrial, lead',desc:'Oportunidade de construção de galpão industrial 2.500m² para armazenagem refrigerada. Contato via indicação.',checklist:[{t:'Identificar e registrar cliente',done:true},{t:'Fazer contato inicial',done:false},{t:'Agendar reunião',done:false},{t:'Levantar escopo da demanda',done:false},{t:'Realizar visita técnica',done:false},{t:'Elaborar orçamento',done:false},{t:'Enviar proposta formal',done:false}],files:[],comments:[],hist:[{txt:'Demanda criada',data:'12/06/2025 11:00'}]},
+  {id:8,title:'Problemas Elétricos Piso 7 — Torre Empresarial B',tipo:'Assunto de obra',setor:'Engenharia / Obras',status:'Triagem técnica',pri:'Alta',resp:'Eng. Marcos',partic:'Rodrigo Melo',date:'2025-06-16',vinc:'Obra: Torre Empresarial B',tags:'elétrica, instalação, piso 7',desc:'Falha no quadro de distribuição do 7º andar causando desligamento intermitente. Afeta cronograma de entrega.',checklist:[{t:'Descrever o problema detalhadamente',done:true},{t:'Anexar fotos e documentos',done:true},{t:'Definir responsável técnico',done:true},{t:'Avaliar impacto em prazo e custo',done:false},{t:'Criar plano de ação',done:false},{t:'Executar a correção',done:false},{t:'Validar conclusão com engenharia',done:false}],files:['foto_quadro_eletrico.jpg'],comments:[{autor:'Eng. Marcos',data:'12/06/2025 14:00',txt:'Eletricista contratado para vistoria amanhã cedo.'}],hist:[{txt:'Demanda criada',data:'11/06/2025 08:00'}]},
+  {id:9,title:'Revisão Contrato Empreiteira Alvenaria',tipo:'Jurídico',setor:'Jurídico',status:'Em análise',pri:'Alta',resp:'Dr. Paulo Martins',partic:'Pedro Alves',date:'2025-06-25',vinc:'Empreiteira: Construções Raposo',tags:'contrato, empreiteira, revisão',desc:'Revisar cláusulas de rescisão e prazo do contrato com empreiteira de alvenaria. Suspeita de cláusula desfavorável.',checklist:[{t:'Receber e analisar demanda',done:true},{t:'Realizar análise jurídica',done:false},{t:'Minutar documento/contrato',done:false},{t:'Revisar com equipe',done:false},{t:'Assinar / protocolar',done:false},{t:'Arquivar documentação',done:false}],files:['contrato_empreiteira_atual.pdf'],comments:[],hist:[{txt:'Demanda criada',data:'10/06/2025 10:00'}]},
+];
+
+// ══════════════════════════════════════════════
+//  STORAGE
+// ══════════════════════════════════════════════
+function loadData(){
+  try{const s=localStorage.getItem('cm_data');if(s){const p=JSON.parse(s);DATA=p.data;nxtId=p.nxtId;}else{DATA=SEED;nxtId=10;}
+  }catch(e){DATA=SEED;nxtId=10;}
+}
+function saveData(){
+  try{localStorage.setItem('cm_data',JSON.stringify({data:DATA,nxtId}));}catch(e){}
+}
+function exportData(){
+  const blob=new Blob([JSON.stringify({data:DATA,nxtId},null,2)],{type:'application/json'});
+  const a=document.createElement('a');a.href=URL.createObjectURL(blob);
+  a.download=`cm_engenharia_backup_${new Date().toISOString().slice(0,10)}.json`;a.click();
+  toast('Dados exportados com sucesso!');
+}
+function importData(inp){
+  const f=inp.files[0];if(!f)return;
+  const r=new FileReader();
+  r.onload=e=>{try{const p=JSON.parse(e.target.result);DATA=p.data;nxtId=p.nxtId;saveData();nav(currentView,null);toast('Dados importados!');}catch(err){alert('Arquivo inválido.');}};
+  r.readAsText(f);inp.value='';
+}
+
+// ══════════════════════════════════════════════
+//  NAV
+// ══════════════════════════════════════════════
+let currentView = 'dashboard';
+function nav(v, el){
+  document.querySelectorAll('.view').forEach(x=>x.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(x=>x.classList.remove('active'));
+  const view=document.getElementById('view-'+v);
+  if(view)view.classList.add('active');
+  if(el)el.classList.add('active');
+  currentView=v;
+  const meta=PAGE_META[v]||{title:v,sub:''};
+  document.getElementById('page-title').textContent=meta.title;
+  document.getElementById('page-sub').textContent=meta.sub;
+  if(v==='dashboard')renderDash();
+  if(v==='kanban'){populateFilters();renderKanbanGeral();}
+  const sectorBoards={negocios:['Comercial / Novos Negócios',COLS_NEG,'kb-negocios'],obras:['Engenharia / Obras',COLS_OBR,'kb-obras'],admin:['Administrativo',COLS_ADM,'kb-admin'],financeiro:['Financeiro',COLS_GERAL,'kb-financeiro'],juridico:['Jurídico',COLS_GERAL,'kb-juridico'],suprimentos:['Suprimentos',COLS_GERAL,'kb-suprimentos'],licitacoes:['Licitações',COLS_GERAL,'kb-licitacoes'],diretoria:['Diretoria',COLS_GERAL,'kb-diretoria']};
+  if(sectorBoards[v])renderKanban(...sectorBoards[v]);
+  updateBadge();
+}
+
+function updateBadge(){
+  const late=DATA.filter(d=>ds(d.date)==='late'&&!['Concluído','Finalizado','Resolvido','Ganho','Arquivado'].includes(d.status)).length;
+  const b=document.getElementById('badge-late');
+  b.textContent=late;b.style.display=late?'':'none';
+}
+
+// ══════════════════════════════════════════════
+//  DASHBOARD
+// ══════════════════════════════════════════════
+function renderDash(){
+  const total=DATA.length;
+  const atrasados=DATA.filter(d=>ds(d.date)==='late'&&!['Concluído','Finalizado','Resolvido','Ganho','Arquivado'].includes(d.status)).length;
+  const criticos=DATA.filter(d=>d.pri==='Crítica'&&!['Concluído','Finalizado','Resolvido','Ganho'].includes(d.status)).length;
+  const concluidos=DATA.filter(d=>['Concluído','Finalizado','Resolvido','Ganho'].includes(d.status)).length;
+  const aguardando=DATA.filter(d=>d.status.toLowerCase().includes('aguardando')).length;
+  const novos=DATA.filter(d=>d.tipo==='Novo negócio'&&!['Ganho','Perdido'].includes(d.status)).length;
+  document.getElementById('dash-stats').innerHTML=`
+    <div class="stat-card c-blue"><div class="stat-lbl">Total demandas</div><div class="stat-val">${total}</div><div class="stat-sub">abertas e fechadas</div></div>
+    <div class="stat-card c-red"><div class="stat-lbl">Atrasadas</div><div class="stat-val">${atrasados}</div><div class="stat-sub">prazo vencido</div></div>
+    <div class="stat-card c-red"><div class="stat-lbl">Críticas</div><div class="stat-val">${criticos}</div><div class="stat-sub">prioridade máxima</div></div>
+    <div class="stat-card c-amber"><div class="stat-lbl">Aguardando</div><div class="stat-val">${aguardando}</div><div class="stat-sub">terceiro ou documento</div></div>
+    <div class="stat-card c-green"><div class="stat-lbl">Concluídas</div><div class="stat-val">${concluidos}</div><div class="stat-sub">finalizadas</div></div>
+    <div class="stat-card c-purple"><div class="stat-lbl">Neg. em andamento</div><div class="stat-val">${novos}</div><div class="stat-sub">no pipeline comercial</div></div>
+  `;
+  const setores=Object.keys(SETOR_MAP);
+  document.getElementById('dash-setores').innerHTML=setores.map(s=>{
+    const items=DATA.filter(d=>d.setor===s);if(!items.length)return'';
+    const done=items.filter(d=>['Concluído','Finalizado','Resolvido','Ganho'].includes(d.status)).length;
+    const p=Math.round(done/items.length*100);
+    const col=SETOR_MAP[s].color;
+    const nm=s.split('/')[0].trim();
+    return`<div class="bar-row"><div class="bar-label">${nm}</div><div class="bar-track"><div class="bar-fill" style="width:${p}%;background:${col}"></div></div><div class="bar-val">${items.length}</div></div>`;
+  }).join('');
+  const pris=['Crítica','Alta','Média','Baixa'];
+  const pCols=['#ef4444','#f97316','#eab308','#22c55e'];
+  document.getElementById('dash-prioridades').innerHTML=pris.map((p,i)=>{
+    const cnt=DATA.filter(d=>d.pri===p).length;
+    const pp=DATA.length?Math.round(cnt/DATA.length*100):0;
+    return`<div class="bar-row"><div class="bar-label">${p}</div><div class="bar-track"><div class="bar-fill" style="width:${pp}%;background:${pCols[i]}"></div></div><div class="bar-val">${cnt}</div></div>`;
+  }).join('');
+  const recent=[...DATA].sort((a,b)=>b.id-a.id).slice(0,8);
+  document.getElementById('dash-recent').innerHTML=recent.map(d=>`
+    <tr onclick="openCard(${d.id})">
+      <td>${d.title}</td>
+      <td>${sectorPill(d.setor)}</td>
+      <td style="color:var(--text2)">${d.resp||'—'}</td>
+      <td><span class="pill ${PRI_PILL[d.pri]||''}">${d.pri}</span></td>
+      <td>${fmtDate(d.date)} ${dsPill(d.date)}</td>
+      <td style="color:var(--text2);font-size:11px">${d.status}</td>
+    </tr>`).join('');
+}
+
+// ══════════════════════════════════════════════
+//  KANBAN
+// ══════════════════════════════════════════════
+function renderKanbanGeral(){
+  let items=[...DATA];
+  if(kFilters.setor)items=items.filter(d=>d.setor===kFilters.setor);
+  if(kFilters.pri)items=items.filter(d=>d.pri===kFilters.pri);
+  if(kFilters.resp)items=items.filter(d=>d.resp===kFilters.resp);
+  if(kFilters.tipo)items=items.filter(d=>d.tipo===kFilters.tipo);
+  if(kFilters.prazo==='late')items=items.filter(d=>ds(d.date)==='late');
+  else if(kFilters.prazo==='today')items=items.filter(d=>ds(d.date)==='today');
+  else if(kFilters.prazo==='week')items=items.filter(d=>{const dd=dayDiff(d.date);return dd!==null&&dd>=0&&dd<=7});
+  drawBoard('kb-geral',COLS_GERAL,items);
+}
+
+function renderKanban(setor,cols,boardId){
+  const items=DATA.filter(d=>d.setor===setor);
+  drawBoard(boardId,cols,items);
+}
+
+function drawBoard(boardId,cols,items){
+  const board=document.getElementById(boardId);
+  if(!board)return;
+  board.innerHTML=cols.map(col=>{
+    const cards=items.filter(d=>d.status===col);
+    return`<div class="k-col">
+      <div class="k-col-hdr"><span class="k-col-name">${col}</span><span class="k-col-cnt">${cards.length}</span></div>
+      ${cards.map(kCard).join('')}
+      <button class="k-col-add" onclick="openNewWithStatus('${col.replace(/'/g,"\\'")}')">+ Adicionar</button>
+    </div>`;
+  }).join('');
+}
+
+function kCard(item){
+  const p=pctCL(item);
+  return`<div class="k-card ${PRI_BAR[item.pri]||''}" onclick="openCard(${item.id})">
+    <div class="k-card-title">${item.title}</div>
+    <div class="k-card-pills">
+      ${sectorPill(item.setor)}
+      <span class="pill ${PRI_PILL[item.pri]||''}">${item.pri}</span>
+      ${dsPill(item.date)}
+    </div>
+    ${p>0?`<div class="k-progress"><div class="k-progress-fill" style="width:${p}%"></div></div>`:''}
+    <div class="k-card-foot">
+      <span class="k-card-owner">${item.resp?'👤 '+item.resp:''}</span>
+      <span class="k-card-date">${item.date?'📅 '+fmtDate(item.date):''}</span>
+    </div>
+  </div>`;
+}
+
+function populateFilters(){
+  const setores=[...new Set(DATA.map(d=>d.setor))];
+  const resps=[...new Set(DATA.map(d=>d.resp).filter(Boolean))];
+  const tipos=[...new Set(DATA.map(d=>d.tipo).filter(Boolean))];
+  const fs=document.getElementById('f-setor');
+  const fr=document.getElementById('f-resp');
+  const ft=document.getElementById('f-tipo');
+  fs.innerHTML='<option value="">Todos os setores</option>'+setores.map(s=>`<option>${s}</option>`).join('');
+  fr.innerHTML='<option value="">Todos</option>'+resps.map(r=>`<option>${r}</option>`).join('');
+  ft.innerHTML='<option value="">Todos os tipos</option>'+tipos.map(t=>`<option>${t}</option>`).join('');
+  // restore
+  if(kFilters.setor)fs.value=kFilters.setor;
+  if(kFilters.resp)fr.value=kFilters.resp;
+  if(kFilters.tipo)ft.value=kFilters.tipo;
+}
+
+function applyFilters(){
+  kFilters.setor=document.getElementById('f-setor').value;
+  kFilters.pri=document.getElementById('f-pri').value;
+  kFilters.resp=document.getElementById('f-resp').value;
+  kFilters.prazo=document.getElementById('f-prazo').value;
+  kFilters.tipo=document.getElementById('f-tipo').value;
+  renderKanbanGeral();
+}
+function clearFilters(){
+  kFilters={setor:'',pri:'',resp:'',prazo:'',tipo:''};
+  ['f-setor','f-pri','f-resp','f-prazo','f-tipo'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});
+  renderKanbanGeral();
+}
+
+function globalSearch(q){
+  if(!q.trim()){if(currentView==='kanban')renderKanbanGeral();return;}
+  const ql=q.toLowerCase();
+  const hits=DATA.filter(d=>d.title.toLowerCase().includes(ql)||d.desc.toLowerCase().includes(ql)||(d.tags||'').toLowerCase().includes(ql)||(d.resp||'').toLowerCase().includes(ql)||(d.vinc||'').toLowerCase().includes(ql));
+  const board=document.getElementById('kb-geral');
+  if(board&&currentView==='kanban'){
+    board.innerHTML=`<div class="k-col" style="width:100%;min-width:320px">
+      <div class="k-col-hdr"><span class="k-col-name">🔍 Resultados para "${q}"</span><span class="k-col-cnt">${hits.length}</span></div>
+      ${hits.length?hits.map(kCard).join(''):'<div class="empty-state"><div class="empty-icon">🔍</div><p>Nenhuma demanda encontrada</p></div>'}
+    </div>`;
+  }
+}
+
+// ══════════════════════════════════════════════
+//  MODAL DETALHES
+// ══════════════════════════════════════════════
+function openCard(id){
+  activeId=id;
+  const item=DATA.find(d=>d.id===id);if(!item)return;
+  document.getElementById('d-title').value=item.title;
+  document.getElementById('d-pills').innerHTML=`${sectorPill(item.setor)}<span class="pill ${PRI_PILL[item.pri]||''}">${item.pri}</span>${dsPill(item.date)}`;
+  document.getElementById('ov-detail').classList.remove('hidden');
+  mTab('det');
+}
+function closeDetail(){document.getElementById('ov-detail').classList.add('hidden');activeId=null;refreshCurrentView();}
+
+function mTab(t){
+  document.querySelectorAll('.m-tab').forEach((b,i)=>{
+    b.classList.toggle('active',['det','cl','com','arq','hist'][i]===t);
+  });
+  document.querySelectorAll('.m-panel').forEach(p=>p.classList.remove('active'));
+  document.getElementById('mp-'+t).classList.add('active');
+  const item=DATA.find(d=>d.id===activeId);if(!item)return;
+  if(t==='det')renderDet(item);
+  if(t==='cl')renderCL(item);
+  if(t==='com')renderCom(item);
+  if(t==='arq')renderArq(item);
+  if(t==='hist')renderHist(item);
+}
+
+function saveField(field,val){
+  if(activeId===null)return;
+  const item=DATA.find(d=>d.id===activeId);if(!item)return;
+  if(item[field]===val)return;
+  item.hist.push({txt:`"${field}" alterado`,data:nowStr()});
+  item[field]=val;saveData();
+}
+
+function renderDet(item){
+  const allCols=[...COLS_GERAL,...COLS_NEG,...COLS_OBR,...COLS_ADM];
+  const uniq=[...new Set(allCols)];
+  document.getElementById('mp-det').innerHTML=`
+    <div class="field-grid">
+      <div class="field-item"><div class="field-label">Status</div>
+        <select class="field-select" onchange="updF(${item.id},'status',this.value)">
+          ${uniq.map(c=>`<option${c===item.status?' selected':''}>${c}</option>`).join('')}
+        </select></div>
+      <div class="field-item"><div class="field-label">Prioridade</div>
+        <select class="field-select" onchange="updF(${item.id},'pri',this.value)">
+          ${['Baixa','Média','Alta','Crítica'].map(c=>`<option${c===item.pri?' selected':''}>${c}</option>`).join('')}
+        </select></div>
+      <div class="field-item"><div class="field-label">Responsável</div>
+        <input class="field-input" value="${item.resp||''}" onblur="updF(${item.id},'resp',this.value)"></div>
+      <div class="field-item"><div class="field-label">Participantes</div>
+        <input class="field-input" value="${item.partic||''}" onblur="updF(${item.id},'partic',this.value)"></div>
+      <div class="field-item"><div class="field-label">Data limite</div>
+        <input type="date" class="field-input" value="${item.date||''}" onchange="updF(${item.id},'date',this.value)"></div>
+      <div class="field-item"><div class="field-label">Vinculado a</div>
+        <input class="field-input" value="${item.vinc||''}" onblur="updF(${item.id},'vinc',this.value)"></div>
+      <div class="field-item"><div class="field-label">Setor</div>
+        <select class="field-select" onchange="updF(${item.id},'setor',this.value)">
+          ${Object.keys(SETOR_MAP).map(s=>`<option${s===item.setor?' selected':''}>${s}</option>`).join('')}
+        </select></div>
+      <div class="field-item"><div class="field-label">Tags</div>
+        <input class="field-input" value="${item.tags||''}" onblur="updF(${item.id},'tags',this.value)"></div>
+    </div>
+    <div class="field-item" style="margin-bottom:.75rem"><div class="field-label">Descrição</div>
+      <textarea class="field-textarea" style="margin-top:4px" onblur="updF(${item.id},'desc',this.value)">${item.desc||''}</textarea></div>
+    ${item.tags?`<div style="margin-bottom:.5rem">${item.tags.split(',').map(t=>`<span class="pill" style="background:var(--surface2);color:var(--text2);margin-right:4px">${t.trim()}</span>`).join('')}</div>`:''}
+    <div class="form-actions-modal">
+      <button class="btn btn-danger" onclick="delCard(${item.id})">🗑 Excluir demanda</button>
+      <button class="btn btn-primary" onclick="closeDetail()">✓ Salvar e fechar</button>
+    </div>`;
+}
+
+function updF(id,field,val){
+  const item=DATA.find(d=>d.id===id);if(!item)return;
+  if(item[field]===val)return;
+  item.hist.push({txt:`"${field}" alterado: "${item[field]||''}" → "${val}"`,data:nowStr()});
+  item[field]=val;
+  saveData();
+  // update pills
+  document.getElementById('d-pills').innerHTML=`${sectorPill(item.setor)}<span class="pill ${PRI_PILL[item.pri]||''}">${item.pri}</span>${dsPill(item.date)}`;
+  toast('Salvo!');
+}
+
+function delCard(id){
+  if(!confirm('Excluir esta demanda permanentemente?'))return;
+  DATA=DATA.filter(d=>d.id!==id);saveData();closeDetail();toast('Demanda excluída.');
+}
+
+function renderCL(item){
+  const done=item.checklist.filter(c=>c.done).length;
+  const p=item.checklist.length?Math.round(done/item.checklist.length*100):0;
+  document.getElementById('mp-cl').innerHTML=`
+    <div class="cl-progress-row">
+      <div class="cl-progress-track"><div class="cl-progress-fill" id="cl-prog-fill" style="width:${p}%"></div></div>
+      <span class="cl-pct" id="cl-prog-pct">${done}/${item.checklist.length} — ${p}%</span>
+    </div>
+    <div id="cl-items">
+      ${item.checklist.map((c,i)=>`
+        <div class="cl-item">
+          <div class="cl-check${c.done?' done':''}" onclick="togCL(${item.id},${i})">${c.done?'✓':''}</div>
+          <span class="cl-check-text${c.done?' done':''}">${c.t}</span>
+          <button class="cl-del" onclick="delCLItem(${item.id},${i})" title="Remover">×</button>
+        </div>`).join('')}
+    </div>
+    <div class="cl-add-row" style="margin-top:8px">
+      <input class="cl-add-inp" id="cl-inp-${item.id}" placeholder="Novo item do checklist..." onkeydown="if(event.key==='Enter')addCLItem(${item.id})">
+      <button class="btn btn-sm" onclick="addCLItem(${item.id})">+ Adicionar</button>
+    </div>`;
+}
+
+function togCL(id,i){
+  const item=DATA.find(d=>d.id===id);
+  item.checklist[i].done=!item.checklist[i].done;
+  item.hist.push({txt:`Checklist: "${item.checklist[i].t}" ${item.checklist[i].done?'✓ marcado':'desmarcado'}`,data:nowStr()});
+  saveData();renderCL(item);
+}
+function addCLItem(id){
+  const inp=document.getElementById('cl-inp-'+id);
+  const t=(inp.value||'').trim();if(!t)return;
+  const item=DATA.find(d=>d.id===id);
+  item.checklist.push({t,done:false});
+  saveData();renderCL(item);inp.value='';
+}
+function delCLItem(id,i){
+  const item=DATA.find(d=>d.id===id);
+  item.checklist.splice(i,1);saveData();renderCL(item);
+}
+
+function renderCom(item){
+  document.getElementById('mp-com').innerHTML=`
+    <div id="com-list">
+      ${item.comments.length?item.comments.map(c=>`
+        <div class="comment-item">
+          <div class="comment-meta"><span class="comment-autor">👤 ${c.autor}</span>· ${c.data}</div>
+          <div class="comment-txt">${c.txt}</div>
+        </div>`).join(''):'<div style="color:var(--text3);font-size:12px;padding:.5rem 0">Nenhum comentário ainda.</div>'}
+    </div>
+    <div class="comment-form">
+      <textarea class="field-textarea" id="com-txt" style="min-height:56px" placeholder="Escreva um comentário, observação ou atualização..."></textarea>
+      <div class="comment-row">
+        <input class="field-input" id="com-autor" placeholder="Seu nome" style="flex:1">
+        <button class="btn btn-primary btn-sm" onclick="addComment(${item.id})">Comentar</button>
+      </div>
+    </div>`;
+}
+function addComment(id){
+  const txt=(document.getElementById('com-txt').value||'').trim();
+  const autor=(document.getElementById('com-autor').value||'').trim()||'Equipe CM';
+  if(!txt)return;
+  const item=DATA.find(d=>d.id===id);
+  item.comments.push({autor,txt,data:nowStr()});
+  item.hist.push({txt:`Comentário adicionado por ${autor}`,data:nowStr()});
+  saveData();renderCom(item);
+}
+
+function renderArq(item){
+  document.getElementById('mp-arq').innerHTML=`
+    <div class="file-drop" onclick="document.getElementById('fu-${item.id}').click()">
+      📎 Clique para anexar arquivos<br><small style="font-size:10px;color:var(--text3)">os nomes dos arquivos ficam salvos</small>
+    </div>
+    <input type="file" id="fu-${item.id}" style="display:none" multiple onchange="addFiles(${item.id},this)">
+    <div class="file-chips" style="margin-top:.75rem">
+      ${item.files.map(f=>`<span class="file-chip">📄 ${f}</span>`).join('')}
+    </div>
+    ${!item.files.length?'<p style="color:var(--text3);font-size:12px;margin-top:.5rem">Nenhum arquivo anexado.</p>':''}`;
+}
+function addFiles(id,inp){
+  const item=DATA.find(d=>d.id===id);
+  Array.from(inp.files).forEach(f=>{item.files.push(f.name);item.hist.push({txt:`Arquivo anexado: ${f.name}`,data:nowStr()});});
+  saveData();renderArq(item);toast('Arquivo(s) registrado(s)!');
+}
+
+function renderHist(item){
+  document.getElementById('mp-hist').innerHTML=item.hist.length
+    ?[...item.hist].reverse().map(h=>`<div class="hist-item"><div class="hist-dot"></div><div class="hist-txt">${h.txt}</div><div class="hist-date">${h.data}</div></div>`).join('')
+    :'<div style="color:var(--text3);font-size:12px">Nenhum histórico registrado.</div>';
+}
+
+// ══════════════════════════════════════════════
+//  NOVA DEMANDA
+// ══════════════════════════════════════════════
+let presetStatus = '';
+function openNew(){presetStatus='';_openNew();}
+function openNewWithStatus(s){presetStatus=s;_openNew();}
+function _openNew(){
+  ['n-title','n-resp','n-partic','n-vinc','n-tags','n-desc'].forEach(id=>document.getElementById(id).value='');
+  document.getElementById('n-date').value='';
+  document.getElementById('n-tipo').value='Novo negócio';
+  document.getElementById('n-setor').value='Comercial / Novos Negócios';
+  document.getElementById('n-pri').value='Média';
+  document.getElementById('n-status').value=presetStatus||'Entrada / Nova demanda';
+  newCLItems=(CL_TPL['Novo negócio']||[]).map(t=>({t,done:false}));
+  renderNewCL();
+  document.getElementById('ov-new').classList.remove('hidden');
+}
+function closeNew(){document.getElementById('ov-new').classList.add('hidden');}
+function onTipoChange(){
+  const tipo=document.getElementById('n-tipo').value;
+  newCLItems=(CL_TPL[tipo]||[]).map(t=>({t,done:false}));
+  renderNewCL();
+}
+function renderNewCL(){
+  document.getElementById('n-cl-list').innerHTML=newCLItems.map((c,i)=>`
+    <div class="cl-item">
+      <div class="cl-check" style="opacity:.3">&nbsp;</div>
+      <span class="cl-check-text">${c.t}</span>
+      <button class="cl-del" onclick="newCLItems.splice(${i},1);renderNewCL()">×</button>
+    </div>`).join('');
+}
+function addNewCLItem(){
+  const inp=document.getElementById('n-cl-inp');
+  const t=(inp.value||'').trim();if(!t)return;
+  newCLItems.push({t,done:false});renderNewCL();inp.value='';
+}
+function saveNewDemand(){
+  const title=(document.getElementById('n-title').value||'').trim();
+  if(!title){alert('Informe o título da demanda.');return;}
+  const item={
+    id:nxtId++,title,
+    tipo:document.getElementById('n-tipo').value,
+    setor:document.getElementById('n-setor').value,
+    status:document.getElementById('n-status').value,
+    pri:document.getElementById('n-pri').value,
+    resp:document.getElementById('n-resp').value.trim(),
+    partic:document.getElementById('n-partic').value.trim(),
+    date:document.getElementById('n-date').value,
+    vinc:document.getElementById('n-vinc').value.trim(),
+    tags:document.getElementById('n-tags').value.trim(),
+    desc:document.getElementById('n-desc').value.trim(),
+    checklist:[...newCLItems],
+    files:[],comments:[],
+    hist:[{txt:'Demanda criada',data:nowStr()}]
+  };
+  DATA.unshift(item);saveData();closeNew();
+  toast('Demanda criada com sucesso!');
+  refreshCurrentView();updateBadge();
+}
+
+function refreshCurrentView(){nav(currentView,document.querySelector('.nav-item.active'));}
+
+// ══════════════════════════════════════════════
+//  UTILS
+// ══════════════════════════════════════════════
+function toggleTheme(){
+  const body=document.body;
+  const cur=body.getAttribute('data-theme');
+  body.setAttribute('data-theme',cur==='dark'?'':'dark');
+  localStorage.setItem('cm_theme',body.getAttribute('data-theme'));
+}
+
+function toast(msg){
+  const t=document.getElementById('toast');
+  t.textContent=msg;t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'),2200);
+}
+
+// ══════════════════════════════════════════════
+//  INIT
+// ══════════════════════════════════════════════
+loadData();
+const savedTheme=localStorage.getItem('cm_theme');
+if(savedTheme)document.body.setAttribute('data-theme',savedTheme);
+renderDash();
+updateBadge();
+</script>
+</body>
+</html>
